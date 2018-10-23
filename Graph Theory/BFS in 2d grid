@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define pii pair<int, int>
+int dx[] = {0, 1, 0, -1};
+int dy[] = {-1, 0, 1, 0};
+int T, m, n, arow, acol, brow, bcol, crow, ccol, hrow, hcol;
+bool vis[30][30];
+char cell[30][30];
+int dist[30][30];
+void BFS(int x, int y)
+{
+    queue<pii>Q;
+    vis[x][y] = true;
+    Q.push(pii(x, y));
+    dist[x][y] = 0;
+    while(Q.size()!=0)
+    {
+        pii Top = Q.front();
+        Q.pop();
+        int a = Top.first;
+        int b = Top.second;
+        for(int k = 0; k<4; k++)
+        {
+            int row = a + dx[k];
+            int col = b + dy[k];
+            if(row>=0 && row<m && col>=0 && col<n && !vis[row][col] && cell[row][col]!='m' && cell[row][col]!='#')
+            {
+                vis[row][col] = true;
+                dist[row][col] = dist[a][b] + 1;
+                Q.push(pii(row, col));
+            }
+        }
+    }
+    return;
+}
+void Clear()
+{
+    memset(vis, false, sizeof(vis));
+    memset(dist, 0, sizeof(dist));
+}
+
+int main ()
+{
+    cin>>T;
+    for(int tc = 1; tc<=T; tc++)
+    {
+        Clear();
+        cin>>m>>n;
+        for(int i = 0; i<m; i++)
+        {
+            for(int j  = 0; j<n; j++)
+            {
+                cin>>cell[i][j];
+            }
+        }
+        for(int i = 0; i<m; i++)
+        {
+            for(int j  = 0; j<n; j++)
+            {
+                if(cell[i][j] == 'a')
+                {
+                    arow = i;
+                    acol = j;
+                }
+                else if(cell[i][j] == 'b')
+                {
+                    brow = i;
+                    bcol = j;
+                }
+                else if(cell[i][j] == 'c')
+                {
+                    crow = i;
+                    ccol = j;
+                }
+                else if(cell[i][j] == 'h')
+                {
+                    hrow = i;
+                    hcol = j;
+                }
+            }
+        }
+        BFS(hrow, hcol);
+        int ans = max(dist[arow][acol], max(dist[brow][bcol], dist[crow][ccol]));
+        cout<<"Case "<<tc<<": "<<ans<<endl;
+        ans = 0;
+    }
+    return 0;
+}
