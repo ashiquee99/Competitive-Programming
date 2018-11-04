@@ -8,27 +8,29 @@ typedef                long long int ll;
 using namespace std;
 
 int f[MX];//the failure array
-
 void failure_function(string& pattern)
 {
     f[0] = 0;
-    int k = 1, len = 0, len_p = pattern.size();
+    int i = 1, j = 0, len_p = pattern.size();
 
-    while (k < len_p)
+    while (i<len_p)
     {
-        if (pattern[k] == pattern[len])
+        if (pattern[i] == pattern[j])
         {
-            f[k++] = ++len;
+            j++;
+            f[i] = j;
+            i++;
         }
         else
         {
-            if (len)//here len is non zero
+            if (j>0)//here j is non zero
             {
-                len = f[len - 1];
+                j = f[j - 1];
             }
             else
             {
-                f[k++] = 0;
+                f[i] = 0;
+                i++;
             }
         }
 
@@ -67,17 +69,12 @@ void KMP_match(string& txt, string& pattern)
         }
     }
 }
-
 int main()
 {
-    int tc, t = 0;
-    scanf("%d\n", &tc);
-    while (tc--)
-    {
-        string TXT, PT;
-        cin>>TXT;
-        cin>>PT;
-        failure_function(PT);
-        KMP_match(TXT, PT);
-    }
+    string S, m;
+    cin>>S;
+    cin>>m;
+    failure_function(S);
+    KMP_match(S, m);
+    return 0;
 }
