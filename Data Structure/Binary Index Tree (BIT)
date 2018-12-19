@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define                MXX 1000006
+#define                FAST_IO ios_base::sync_with_stdio(false),cin.tie(NULL)
+#define                exit() return 0
+#define                mpii map<int, int>
+#define                mpit map<int, int>::iterator it
+#define                si set<int>
+#define                sit set<int>::iterator it;
+#define                ll long long int
+const                  ll INF = 2000000000000000000LL;
+const                  int MOD = 10000007;
+int BIT[MXX], a[MXX], n;
+void update(int x, int delta)
+{
+      for(; x <= n; x += x&-x)
+        BIT[x] += delta;
+}
+int query(int x)
+{
+     int sum = 0;
+     for(; x > 0; x -= x&-x)
+        sum += BIT[x];
+     return sum;
+}
+
+int main()
+{
+     scanf("%d", &n);
+     int i;
+     for(i = 1; i <= n; i++)
+     {
+           scanf("%d", &a[i]);
+           update(i, a[i]);
+     }
+    cout<<query(3)<<endl;
+     return 0;
+}
