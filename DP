@@ -1,0 +1,116 @@
+///Problem Link: https://codeforces.com/contest/1036/problem/C
+
+
+#include <bits/stdc++.h>
+using namespace std;
+#include <ext/pb_ds/assoc_container.hpp> // Include for built in treap
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+const int MOD = 1e9 + 7;
+#define ll long long int
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define pb push_back
+#define eb emplace_back
+#define ff first
+#define ss second
+#define vi vector<int>
+#define vl vector<ll>
+#define vpii vector<pii>
+#define vpll vector<pll>
+#define si set<int>
+#define mpii map<int, int>
+#define prq priority_queue
+#define sz(s) (int) s.size()
+#define pf printf
+#define sf scanf
+#define pi 2 * acos (0.0)
+#define inf 1e9
+#define dbg cout<<"ok"<<endl;
+#define FOR(i, j, k) for(int i=(j); i<(k); i++)
+#define REV(i, j, k) for(int i=(n-1); i>=k; i--)
+#define rnd(a, b) ((((rand()<<15)^rand())%((b)-(a) + 1))+(a))
+#define FAST_IO ios_base::sync_with_stdio(false),cin.tie(NULL)
+#define mem(x, y) memset(x, y, sizeof(x))
+#define rev(vec) reverse(vec.begin(), vec.end())
+typedef tree <int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pb_ds;
+const double EPS = 1e-9;
+const int MXX = 3e5 + 5;
+
+vector<int> num;
+ll a, b;
+int DP[20][20][2];
+/// DP[p][c][f] = Number of valid numbers <= b from this state
+/// p = current position from left side (zero based)
+/// c = number of times we have placed the digit d so far
+/// f = the number we are building has already become smaller than b? [0 = no, 1 = yes]
+
+int call(int pos, int cnt, int f)
+{
+    if(cnt > 3) return 0;
+
+    if(pos == (int)num.size())
+    {
+        if(cnt<=3) return 1;
+        return 0;
+    }
+
+    if(DP[pos][cnt][f] != -1) return DP[pos][cnt][f];
+    int res = 0;
+
+    int LMT;
+
+    if(f == 0)
+    {
+        /// Digits we placed so far matches with the prefix of b
+        /// So if we place any digit > num[pos] in the current position, then the number will become greater than b
+        LMT = num[pos];
+    }
+    else
+    {
+        /// The number has already become smaller than b. We can place any digit now.
+        LMT = 9;
+    }
+
+    /// Try to place all the valid digits such that the number doesn't exceed b
+    for(int dgt = 0; dgt<=LMT; dgt++)
+    {
+        int nf = f;
+        int ncnt = cnt;
+        if(f == 0 && dgt < LMT) nf = 1; /// The number is getting smaller at this position
+        if(dgt!=0) ncnt++;
+        if(ncnt <= 3) res += call(pos+1, ncnt, nf);
+    }
+
+    return DP[pos][cnt][f] = res;
+}
+
+int solve(ll b)
+{
+    num.clear();
+    while(b>0)
+    {
+        num.push_back(b%10);
+        b/=10;
+    }
+    reverse(num.begin(), num.end());
+    /// Stored all the digits of b in num for simplicity
+
+    memset(DP, -1, sizeof(DP));
+    int res = call(0, 0, 0);
+    return res;
+}
+
+int main ()
+{
+
+    int tc;
+    cin>>tc;
+    while(tc--)
+    {
+        cin >> a >> b;
+        int res = solve(b) - solve(a-1);
+        cout << res << endl;
+    }
+    return 0;
+}
